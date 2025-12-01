@@ -1,3 +1,4 @@
+import { useCallback, useState } from "react";
 import { Coupon } from "../../types";
 import { ProductWithUI } from "../App";
 
@@ -13,67 +14,153 @@ interface ProductForm {
 }
 
 interface AdminPageProps {
-  activeTab: "products" | "coupons";
-  setActiveTab: (value: React.SetStateAction<"products" | "coupons">) => void;
-  setEditingProduct: (value: React.SetStateAction<string | null>) => void;
-  productForm: ProductForm;
-  setProductForm: (value: ProductForm) => void;
-  setShowProductForm: (value: React.SetStateAction<boolean>) => void;
   products: ProductWithUI[];
+  setProducts: (value: React.SetStateAction<ProductWithUI[]>) => void;
   formatPrice: (price: number, productId?: string | undefined) => string;
-  startEditProduct: (product: ProductWithUI) => void;
-  deleteProduct: (productId: string) => void;
-  showProductForm: boolean;
-  handleProductSubmit: (e: React.FormEvent<Element>) => void;
-  editingProduct: string | null;
   addNotification: (
     message: string,
     type?: "error" | "success" | "warning"
   ) => void;
   coupons: Coupon[];
-  deleteCoupon: (couponCode: string) => void;
-  setShowCouponForm: (value: React.SetStateAction<boolean>) => void;
-  showCouponForm: boolean;
-  handleCouponSubmit: (e: React.FormEvent<Element>) => void;
-  couponForm: {
-    name: string;
-    code: string;
-    discountType: "amount" | "percentage";
-    discountValue: number;
-  };
-  setCouponForm: React.Dispatch<
-    React.SetStateAction<{
-      name: string;
-      code: string;
-      discountType: "amount" | "percentage";
-      discountValue: number;
-    }>
-  >;
+  setCoupons: React.Dispatch<React.SetStateAction<Coupon[]>>;
+  selectedCoupon: Coupon | null;
+  setSelectedCoupon: React.Dispatch<React.SetStateAction<Coupon | null>>;
 }
 
 const AdminPage = ({
-  activeTab,
-  setActiveTab,
-  setEditingProduct,
-  setShowProductForm,
   products,
+  setProducts,
   formatPrice,
-  startEditProduct,
-  deleteProduct,
-  productForm,
-  setProductForm,
-  showProductForm,
-  handleProductSubmit,
-  editingProduct,
   addNotification,
   coupons,
-  deleteCoupon,
-  setShowCouponForm,
-  showCouponForm,
-  handleCouponSubmit,
-  couponForm,
-  setCouponForm,
+  setCoupons,
+  selectedCoupon,
+  setSelectedCoupon,
 }: AdminPageProps) => {
+  const [activeTab, setActiveTab] = useState<"products" | "coupons">(
+    "products"
+  );
+
+  const [productForm, setProductForm] = useState<ProductForm>({
+    name: "",
+    price: 0,
+    stock: 0,
+    description: "",
+    discounts: [] as Array<{ quantity: number; rate: number }>,
+  });
+  const [showProductForm, setShowProductForm] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<string | null>(null);
+
+  const handleProductSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingProduct && editingProduct !== "new") {
+      updateProduct(editingProduct, productForm);
+      setEditingProduct(null);
+    } else {
+      addProduct({
+        ...productForm,
+        discounts: productForm.discounts,
+      });
+    }
+    setProductForm({
+      name: "",
+      price: 0,
+      stock: 0,
+      description: "",
+      discounts: [],
+    });
+    setEditingProduct(null);
+    setShowProductForm(false);
+  };
+
+  const startEditProduct = (product: ProductWithUI) => {
+    setEditingProduct(product.id);
+    setProductForm({
+      name: product.name,
+      price: product.price,
+      stock: product.stock,
+      description: product.description || "",
+      discounts: product.discounts || [],
+    });
+    setShowProductForm(true);
+  };
+
+  const addProduct = useCallback(
+    (newProduct: Omit<ProductWithUI, "id">) => {
+      const product: ProductWithUI = {
+        ...newProduct,
+        id: `p${Date.now()}`,
+      };
+      setProducts((prev) => [...prev, product]);
+      addNotification("상품이 추가되었습니다.", "success");
+    },
+    [addNotification]
+  );
+
+  const updateProduct = useCallback(
+    (productId: string, updates: Partial<ProductWithUI>) => {
+      setProducts((prev) =>
+        prev.map((product) =>
+          product.id === productId ? { ...product, ...updates } : product
+        )
+      );
+      addNotification("상품이 수정되었습니다.", "success");
+    },
+    [addNotification]
+  );
+
+  const deleteProduct = useCallback(
+    (productId: string) => {
+      setProducts((prev) => prev.filter((p) => p.id !== productId));
+      addNotification("상품이 삭제되었습니다.", "success");
+    },
+    [addNotification]
+  );
+
+  const [couponForm, setCouponForm] = useState({
+    name: "",
+    code: "",
+    discountType: "amount" as "amount" | "percentage",
+    discountValue: 0,
+  });
+  const [showCouponForm, setShowCouponForm] = useState(false);
+
+  const addCoupon = useCallback(
+    (newCoupon: Coupon) => {
+      const existingCoupon = coupons.find((c) => c.code === newCoupon.code);
+      if (existingCoupon) {
+        addNotification("이미 존재하는 쿠폰 코드입니다.", "error");
+        return;
+      }
+      setCoupons((prev) => [...prev, newCoupon]);
+      addNotification("쿠폰이 추가되었습니다.", "success");
+    },
+    [coupons, addNotification]
+  );
+
+  const deleteCoupon = useCallback(
+    (couponCode: string) => {
+      setCoupons((prev) => prev.filter((c) => c.code !== couponCode));
+      if (selectedCoupon?.code === couponCode) {
+        setSelectedCoupon(null);
+      }
+      addNotification("쿠폰이 삭제되었습니다.", "success");
+    },
+    [selectedCoupon, addNotification]
+  );
+
+  const handleCouponSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    addCoupon(couponForm);
+    setCouponForm({
+      name: "",
+      code: "",
+      discountType: "amount",
+      discountValue: 0,
+    });
+    setShowCouponForm(false);
+  };
+
   return (
     <div className="max-w-6xl mx-auto">
       <div className="mb-8">
