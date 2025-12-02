@@ -1,23 +1,21 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { CartItem, Coupon, Product } from "../types";
 import Header from "./components/Header";
 import Notifications from "./components/Notifications";
 import AdminPage from "./pages/AdminPage";
 import CartPage from "./pages/CartPage";
 import { INITIAL_COUPONS, INITIAL_PRODUCTS } from "./constants";
+import { useNotification } from "./hooks/useNotification";
 
 export interface ProductWithUI extends Product {
   description?: string;
   isRecommended?: boolean;
 }
 
-interface Notification {
-  id: string;
-  message: string;
-  type: "error" | "success" | "warning";
-}
-
 const App = () => {
+  const { notifications, setNotifications, addNotification } =
+    useNotification();
+
   const [products, setProducts] = useState<ProductWithUI[]>(() => {
     const saved = localStorage.getItem("products");
     if (saved) {
@@ -56,7 +54,6 @@ const App = () => {
 
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
@@ -81,18 +78,6 @@ const App = () => {
 
     return remaining;
   };
-
-  const addNotification = useCallback(
-    (message: string, type: "error" | "success" | "warning" = "success") => {
-      const id = Date.now().toString();
-      setNotifications((prev) => [...prev, { id, message, type }]);
-
-      setTimeout(() => {
-        setNotifications((prev) => prev.filter((n) => n.id !== id));
-      }, 3000);
-    },
-    []
-  );
 
   const [totalItemCount, setTotalItemCount] = useState(0);
 
