@@ -4,7 +4,7 @@ import Header from "./components/Header";
 import Notifications from "./components/Notifications";
 import AdminPage from "./pages/AdminPage";
 import CartPage from "./pages/CartPage";
-import { INITIAL_COUPONS, INITIAL_PRODUCTS } from "./constants/data";
+import { INITIAL_COUPONS, INITIAL_PRODUCTS } from "./constants";
 
 export interface ProductWithUI extends Product {
   description?: string;
