@@ -8,10 +8,6 @@ interface AdminPageProps {
   addProduct: (newProduct: Omit<ProductWithUI, "id">) => void;
   updateProduct: (productId: string, updates: Partial<ProductWithUI>) => void;
   deleteProduct: (productId: string) => void;
-  addNotification: (
-    message: string,
-    type?: "error" | "success" | "warning"
-  ) => void;
   coupons: Coupon[];
   addCoupon: (newCoupon: Coupon) => void;
   deleteCoupon: (couponCode: string) => void;
@@ -22,7 +18,6 @@ const AdminPage = ({
   addProduct,
   updateProduct,
   deleteProduct,
-  addNotification,
   coupons,
   addCoupon,
   deleteCoupon,
@@ -68,14 +63,12 @@ const AdminPage = ({
           addProduct={addProduct}
           updateProduct={updateProduct}
           deleteProduct={deleteProduct}
-          addNotification={addNotification}
         />
       ) : (
         <AdminCoupons
           coupons={coupons}
           addCoupon={addCoupon}
           deleteCoupon={deleteCoupon}
-          addNotification={addNotification}
         />
       )}
     </div>

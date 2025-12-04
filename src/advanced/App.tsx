@@ -2,15 +2,16 @@ import Header from "./components/Header";
 import Notifications from "./components/Notifications";
 import AdminPage from "./pages/AdminPage";
 import CartPage from "./pages/CartPage";
-import { useNotification } from "./hooks/useNotification";
 import { useProducts } from "./hooks/useProducts";
 import { useCart } from "./hooks/useCart";
 import { useCoupons } from "./hooks/useCoupons";
 import { useUIStore } from "./stores/useUIStore";
+import { useNotificationStore } from "./stores/useNotificationStore";
 
 const App = () => {
-  const { notifications, setNotifications, addNotification } =
-    useNotification();
+  const addNotification = useNotificationStore(
+    (state) => state.addNotification
+  );
   const { products, addProduct, updateProduct, deleteProduct } =
     useProducts(addNotification);
   const { cart, setCart, totalItemCount, addToCart, removeFromCart } =
@@ -28,10 +29,7 @@ const App = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 토스트 UI */}
-      <Notifications
-        notifications={notifications}
-        setNotifications={setNotifications}
-      />
+      <Notifications />
 
       {/* 헤더 */}
       <Header cart={cart} totalItemCount={totalItemCount} />
@@ -43,7 +41,6 @@ const App = () => {
             addProduct={addProduct}
             updateProduct={updateProduct}
             deleteProduct={deleteProduct}
-            addNotification={addNotification}
             coupons={coupons}
             addCoupon={addCoupon}
             deleteCoupon={deleteCoupon}
@@ -55,7 +52,6 @@ const App = () => {
             addToCart={addToCart}
             removeFromCart={removeFromCart}
             products={products}
-            addNotification={addNotification}
             coupons={coupons}
             selectedCoupon={selectedCoupon}
             setSelectedCoupon={setSelectedCoupon}

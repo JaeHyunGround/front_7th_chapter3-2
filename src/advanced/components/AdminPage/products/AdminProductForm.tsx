@@ -1,3 +1,4 @@
+import { useNotificationStore } from "../../../stores/useNotificationStore";
 import { ProductForm } from "../../../types/types";
 import { IconClose } from "../../icons/IconClose";
 
@@ -5,10 +6,6 @@ interface AdminProductFormProps {
   productForm: ProductForm;
   setProductForm: React.Dispatch<React.SetStateAction<ProductForm>>;
   editingProduct: string | null;
-  addNotification: (
-    message: string,
-    type?: "error" | "success" | "warning"
-  ) => void;
   handleProductSubmit: (e: React.FormEvent<Element>) => void;
   resetProductFormState: () => void;
 }
@@ -17,10 +14,13 @@ const AdminProductForm = ({
   productForm,
   setProductForm,
   editingProduct,
-  addNotification,
   handleProductSubmit,
   resetProductFormState,
 }: AdminProductFormProps) => {
+  const addNotification = useNotificationStore(
+    (state) => state.addNotification
+  );
+
   return (
     <div className="p-6 border-t border-gray-200 bg-gray-50">
       <form onSubmit={handleProductSubmit} className="space-y-4">

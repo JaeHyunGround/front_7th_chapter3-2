@@ -2,23 +2,17 @@ import { useState } from "react";
 import { Coupon } from "../../../types/types";
 import AdminCouponForm from "./AdminCouponForm";
 import AdminCouponView from "./AdminCouponView";
-import { useCouponForm } from "../../../hooks/useCouponForm";
 
 interface AdminCouponsProps {
   coupons: Coupon[];
   addCoupon: (newCoupon: Coupon) => void;
   deleteCoupon: (couponCode: string) => void;
-  addNotification: (
-    message: string,
-    type?: "error" | "success" | "warning"
-  ) => void;
 }
 
 export const AdminCoupons = ({
   coupons,
   addCoupon,
   deleteCoupon,
-  addNotification,
 }: AdminCouponsProps) => {
   const [showCouponForm, setShowCouponForm] = useState(false);
 
@@ -60,7 +54,6 @@ export const AdminCoupons = ({
           <AdminCouponForm
             addCoupon={addCoupon}
             setShowCouponForm={setShowCouponForm}
-            addNotification={addNotification}
           />
         )}
       </div>

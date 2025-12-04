@@ -10,6 +10,7 @@ import { vi } from "vitest";
 import App from "../App";
 import "../../setupTests";
 import { useUIStore } from "../stores/useUIStore";
+import { useNotificationStore } from "../stores/useNotificationStore";
 import { useSearchStore } from "../stores/useSearchStore";
 
 describe("쇼핑몰 앱 통합 테스트", () => {
@@ -18,7 +19,8 @@ describe("쇼핑몰 앱 통합 테스트", () => {
     localStorage.clear();
     // Zustand 스토어 초기화
     useUIStore.setState({ isAdmin: false });
-    useSearchStore.setState({ searchTerm: false });
+    useSearchStore.setState({ searchTerm: "" });
+    useNotificationStore.setState({ notifications: [] });
     // console 경고 무시
     vi.spyOn(console, "warn").mockImplementation(() => {});
     vi.spyOn(console, "log").mockImplementation(() => {});

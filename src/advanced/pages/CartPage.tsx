@@ -4,10 +4,6 @@ import { Cart } from "../components/CartPage/carts/Cart";
 
 interface CartPageProps {
   products: ProductWithUI[];
-  addNotification: (
-    message: string,
-    type?: "error" | "success" | "warning"
-  ) => void;
   cart: CartItem[];
   setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
   addToCart: (product: ProductWithUI) => void;
@@ -19,7 +15,6 @@ interface CartPageProps {
 
 const CartPage = ({
   products,
-  addNotification,
   cart,
   setCart,
   addToCart,
@@ -40,7 +35,6 @@ const CartPage = ({
         selectedCoupon={selectedCoupon}
         setSelectedCoupon={setSelectedCoupon}
         removeFromCart={removeFromCart}
-        addNotification={addNotification}
       />
     </div>
   );

@@ -1,23 +1,11 @@
+import { useNotificationStore } from "../stores/useNotificationStore";
 import { IconClose } from "./icons/IconClose";
 
-interface Notification {
-  id: string;
-  message: string;
-  type: "error" | "success" | "warning";
-}
-
-interface NotificationsProps {
-  notifications: Notification[];
-  setNotifications: (value: React.SetStateAction<Notification[]>) => void;
-}
-
-const Notifications = ({
-  notifications,
-  setNotifications,
-}: NotificationsProps) => {
-  const handleRemoveNotification = (id: string) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
-  };
+const Notifications = () => {
+  const notifications = useNotificationStore((state) => state.notifications);
+  const removeNotification = useNotificationStore(
+    (state) => state.removeNotification
+  );
 
   return (
     <>
@@ -36,7 +24,7 @@ const Notifications = ({
             >
               <span className="mr-2">{notif.message}</span>
               <button
-                onClick={() => handleRemoveNotification(notif.id)}
+                onClick={() => removeNotification(notif.id)}
                 className="text-white hover:text-gray-200"
               >
                 <IconClose />

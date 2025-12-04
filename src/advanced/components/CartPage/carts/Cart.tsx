@@ -7,6 +7,7 @@ import { calculateCartTotal } from "../../../utils/cart";
 import { IconShoppingBag } from "../../icons/IconShoppingBag";
 import { IconShoppingBagEmpty } from "../../icons/IconShoppingBagEmpty";
 import CartItemRow from "./CartItem";
+import { useNotificationStore } from "../../../stores/useNotificationStore";
 
 interface CartProps {
   cart: CartItem[];
@@ -16,10 +17,6 @@ interface CartProps {
   selectedCoupon: Coupon | null;
   setSelectedCoupon: React.Dispatch<React.SetStateAction<Coupon | null>>;
   removeFromCart: (productId: string) => void;
-  addNotification: (
-    message: string,
-    type?: "error" | "success" | "warning"
-  ) => void;
 }
 
 export const Cart = ({
@@ -30,8 +27,11 @@ export const Cart = ({
   selectedCoupon,
   setSelectedCoupon,
   removeFromCart,
-  addNotification,
 }: CartProps) => {
+  const addNotification = useNotificationStore(
+    (state) => state.addNotification
+  );
+
   // 쿠폰 적용
   const applyCoupon = useCallback(
     (coupon: Coupon) => {

@@ -8,10 +8,6 @@ interface AdminProductsProps {
   addProduct: (newProduct: Omit<ProductWithUI, "id">) => void;
   updateProduct: (productId: string, updates: Partial<ProductWithUI>) => void;
   deleteProduct: (productId: string) => void;
-  addNotification: (
-    message: string,
-    type?: "error" | "success" | "warning"
-  ) => void;
 }
 
 export const AdminProducts = ({
@@ -19,7 +15,6 @@ export const AdminProducts = ({
   addProduct,
   updateProduct,
   deleteProduct,
-  addNotification,
 }: AdminProductsProps) => {
   const {
     productForm,
@@ -58,7 +53,6 @@ export const AdminProducts = ({
           productForm={productForm}
           setProductForm={setProductForm}
           editingProduct={editingProduct}
-          addNotification={addNotification}
           handleProductSubmit={handleProductSubmit}
           resetProductFormState={resetProductFormState}
         />
