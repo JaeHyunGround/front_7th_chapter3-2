@@ -5,3 +5,7 @@ export const formatPrice = (price: number): string => {
 export const formatPriceWon = (price: number): string => {
   return `${price.toLocaleString()}원`;
 };
+
+export const formatPercentage = (rate: number): string => {
+  return `${Math.round(rate * 100)}`;
+};
