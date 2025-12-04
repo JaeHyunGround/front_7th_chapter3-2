@@ -23,11 +23,13 @@ export interface ProductForm {
   }[];
 }
 
+// cart
 export interface CartItem {
   product: Product;
   quantity: number;
 }
 
+// coupon
 export interface Coupon {
   name: string;
   code: string;
@@ -40,6 +42,7 @@ export interface Discount {
   rate: number;
 }
 
+// notification
 export interface Notification {
   id: string;
   message: string;
