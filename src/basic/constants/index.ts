@@ -1,5 +1,4 @@
-import { Coupon } from "../../types";
-import { ProductWithUI } from "../App";
+import { Coupon, ProductWithUI } from "../types/types";
 
 // 초기 데이터
 export const INITIAL_PRODUCTS: ProductWithUI[] = [
