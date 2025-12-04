@@ -16,8 +16,6 @@ interface ProductCardProps {
 const ProductCard = ({ product, cart, addToCart }: ProductCardProps) => {
   const remainingStock = getRemainingStock(product, cart);
 
-  console.log(product);
-
   const formatProductPrice =
     getRemainingStock(product, cart) <= 0
       ? "SOLD OUT"
