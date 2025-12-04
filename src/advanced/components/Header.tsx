@@ -1,4 +1,4 @@
-import { useGlobalStore } from "../stores/useGlobalStore";
+import { useUIStore } from "../stores/useUIStore";
 import { CartItem } from "../types/types";
 import { IconCart } from "./icons/IconCart";
 
@@ -15,8 +15,8 @@ const Header = ({
   cart,
   totalItemCount,
 }: HeaderProps) => {
-  const isAdmin = useGlobalStore((state) => state.isAdmin);
-  const setIsAdmin = useGlobalStore((state) => state.setIsAdmin);
+  const isAdmin = useUIStore((state) => state.isAdmin);
+  const setIsAdmin = useUIStore((state) => state.setIsAdmin);
 
   return (
     // 헤더

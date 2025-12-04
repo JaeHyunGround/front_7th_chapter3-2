@@ -1,11 +1,11 @@
 import { create } from "zustand";
 
-interface GlobalStoreState {
+interface UIStoreState {
   isAdmin: boolean;
   setIsAdmin: (isAdmin: boolean) => void;
 }
 
-export const useGlobalStore = create<GlobalStoreState>((set) => ({
+export const useUIStore = create<UIStoreState>((set) => ({
   isAdmin: false,
   setIsAdmin: (isAdmin: boolean) => set({ isAdmin }),
 }));
