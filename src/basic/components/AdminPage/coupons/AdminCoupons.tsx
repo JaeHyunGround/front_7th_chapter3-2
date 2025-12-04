@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Coupon } from "../../../types/types";
 import AdminCouponForm from "./AdminCouponForm";
 import AdminCouponView from "./AdminCouponView";
+import { useCouponForm } from "../../../hooks/useCouponForm";
 
 interface AdminCouponsProps {
   coupons: Coupon[];
