@@ -1,113 +1,32 @@
-import { useState, useEffect } from "react";
-import { CartItem, Coupon, Product } from "../types";
+import { useState } from "react";
 import Header from "./components/Header";
 import Notifications from "./components/Notifications";
 import AdminPage from "./pages/AdminPage";
 import CartPage from "./pages/CartPage";
-import { INITIAL_COUPONS, INITIAL_PRODUCTS } from "./constants";
 import { useNotification } from "./hooks/useNotification";
-
-export interface ProductWithUI extends Product {
-  description?: string;
-  isRecommended?: boolean;
-}
+import { useProducts } from "./hooks/useProducts";
+import { useCart } from "./hooks/useCart";
+import { useCoupons } from "./hooks/useCoupons";
+import { useDebounce } from "./utils/hooks/useDebounce";
 
 const App = () => {
   const { notifications, setNotifications, addNotification } =
     useNotification();
+  const { products, addProduct, updateProduct, deleteProduct } =
+    useProducts(addNotification);
+  const { cart, setCart, totalItemCount, addToCart, removeFromCart } =
+    useCart(addNotification);
+  const {
+    coupons,
+    addCoupon,
+    deleteCoupon,
+    selectedCoupon,
+    setSelectedCoupon,
+  } = useCoupons(addNotification);
 
-  const [products, setProducts] = useState<ProductWithUI[]>(() => {
-    const saved = localStorage.getItem("products");
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        return INITIAL_PRODUCTS;
-      }
-    }
-    return INITIAL_PRODUCTS;
-  });
-
-  const [cart, setCart] = useState<CartItem[]>(() => {
-    const saved = localStorage.getItem("cart");
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        return [];
-      }
-    }
-    return [];
-  });
-
-  const [coupons, setCoupons] = useState<Coupon[]>(() => {
-    const saved = localStorage.getItem("coupons");
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        return INITIAL_COUPONS;
-      }
-    }
-    return INITIAL_COUPONS;
-  });
-
-  const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-
-  const formatPrice = (price: number, productId?: string): string => {
-    if (productId) {
-      const product = products.find((p) => p.id === productId);
-      if (product && getRemainingStock(product) <= 0) {
-        return "SOLD OUT";
-      }
-    }
-
-    if (isAdmin) {
-      return `${price.toLocaleString()}원`;
-    }
-
-    return `₩${price.toLocaleString()}`;
-  };
-
-  const getRemainingStock = (product: Product): number => {
-    const cartItem = cart.find((item) => item.product.id === product.id);
-    const remaining = product.stock - (cartItem?.quantity || 0);
-
-    return remaining;
-  };
-
-  const [totalItemCount, setTotalItemCount] = useState(0);
-
-  useEffect(() => {
-    const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-    setTotalItemCount(count);
-  }, [cart]);
-
-  useEffect(() => {
-    localStorage.setItem("products", JSON.stringify(products));
-  }, [products]);
-
-  useEffect(() => {
-    localStorage.setItem("coupons", JSON.stringify(coupons));
-  }, [coupons]);
-
-  useEffect(() => {
-    if (cart.length > 0) {
-      localStorage.setItem("cart", JSON.stringify(cart));
-    } else {
-      localStorage.removeItem("cart");
-    }
-  }, [cart]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
+  const debouncedSearchTerm = useDebounce(searchTerm);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -131,26 +50,26 @@ const App = () => {
         {isAdmin ? (
           <AdminPage
             products={products}
-            setProducts={setProducts}
-            formatPrice={formatPrice}
+            addProduct={addProduct}
+            updateProduct={updateProduct}
+            deleteProduct={deleteProduct}
             addNotification={addNotification}
             coupons={coupons}
-            setCoupons={setCoupons}
-            selectedCoupon={selectedCoupon}
-            setSelectedCoupon={setSelectedCoupon}
+            addCoupon={addCoupon}
+            deleteCoupon={deleteCoupon}
           />
         ) : (
           <CartPage
             cart={cart}
             setCart={setCart}
+            addToCart={addToCart}
+            removeFromCart={removeFromCart}
             products={products}
-            formatPrice={formatPrice}
             addNotification={addNotification}
             coupons={coupons}
             selectedCoupon={selectedCoupon}
             setSelectedCoupon={setSelectedCoupon}
             debouncedSearchTerm={debouncedSearchTerm}
-            getRemainingStock={getRemainingStock}
           />
         )}
       </main>
