@@ -1,4 +1,6 @@
+import { useSearchStore } from "../../../stores/useSearchStore";
 import { CartItem, ProductWithUI } from "../../../types/types";
+import { useDebounce } from "../../../utils/hooks/useDebounce";
 import { filterProducts } from "../../../utils/product";
 
 import ProductCard from "./ProductCard";
@@ -7,15 +9,15 @@ interface ProductListProps {
   products: ProductWithUI[];
   cart: CartItem[];
   addToCart: (product: ProductWithUI) => void;
-  debouncedSearchTerm: string;
 }
 
 export const ProductList = ({
   products,
   cart,
   addToCart,
-  debouncedSearchTerm,
 }: ProductListProps) => {
+  const searchTerm = useSearchStore((state) => state.searchTerm);
+  const debouncedSearchTerm = useDebounce(searchTerm);
   const filteredProducts = filterProducts(products, debouncedSearchTerm);
 
   return (

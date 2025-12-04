@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Header from "./components/Header";
 import Notifications from "./components/Notifications";
 import AdminPage from "./pages/AdminPage";
@@ -7,7 +6,6 @@ import { useNotification } from "./hooks/useNotification";
 import { useProducts } from "./hooks/useProducts";
 import { useCart } from "./hooks/useCart";
 import { useCoupons } from "./hooks/useCoupons";
-import { useDebounce } from "./utils/hooks/useDebounce";
 import { useUIStore } from "./stores/useUIStore";
 
 const App = () => {
@@ -26,8 +24,6 @@ const App = () => {
   } = useCoupons(addNotification);
 
   const isAdmin = useUIStore((state) => state.isAdmin);
-  const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearchTerm = useDebounce(searchTerm);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -38,12 +34,7 @@ const App = () => {
       />
 
       {/* 헤더 */}
-      <Header
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        cart={cart}
-        totalItemCount={totalItemCount}
-      />
+      <Header cart={cart} totalItemCount={totalItemCount} />
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         {isAdmin ? (
@@ -68,7 +59,6 @@ const App = () => {
             coupons={coupons}
             selectedCoupon={selectedCoupon}
             setSelectedCoupon={setSelectedCoupon}
-            debouncedSearchTerm={debouncedSearchTerm}
           />
         )}
       </main>

@@ -4,7 +4,6 @@ import { Cart } from "../components/CartPage/carts/Cart";
 
 interface CartPageProps {
   products: ProductWithUI[];
-  debouncedSearchTerm: string;
   addNotification: (
     message: string,
     type?: "error" | "success" | "warning"
@@ -20,7 +19,6 @@ interface CartPageProps {
 
 const CartPage = ({
   products,
-  debouncedSearchTerm,
   addNotification,
   cart,
   setCart,
@@ -32,12 +30,7 @@ const CartPage = ({
 }: CartPageProps) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-      <ProductList
-        products={products}
-        cart={cart}
-        addToCart={addToCart}
-        debouncedSearchTerm={debouncedSearchTerm}
-      />
+      <ProductList products={products} cart={cart} addToCart={addToCart} />
 
       <Cart
         cart={cart}

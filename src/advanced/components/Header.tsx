@@ -1,22 +1,18 @@
+import { useSearchStore } from "../stores/useSearchStore";
 import { useUIStore } from "../stores/useUIStore";
 import { CartItem } from "../types/types";
 import { IconCart } from "./icons/IconCart";
 
 interface HeaderProps {
-  searchTerm: string;
-  setSearchTerm: (term: string) => void;
   cart: CartItem[];
   totalItemCount: number;
 }
 
-const Header = ({
-  searchTerm,
-  setSearchTerm,
-  cart,
-  totalItemCount,
-}: HeaderProps) => {
+const Header = ({ cart, totalItemCount }: HeaderProps) => {
   const isAdmin = useUIStore((state) => state.isAdmin);
   const setIsAdmin = useUIStore((state) => state.setIsAdmin);
+  const searchTerm = useSearchStore((state) => state.searchTerm);
+  const setSearchTerm = useSearchStore((state) => state.setSearchTerm);
 
   return (
     // 헤더
